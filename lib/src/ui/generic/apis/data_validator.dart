@@ -66,4 +66,19 @@ class DataValidator {
       );
     }
   }
+
+  static List<dynamic> validateList(
+    dynamic data,
+    Type dataType,
+  ) {
+    List<dynamic> listToReturn = [];
+    if (data != null) {
+      if (dataType == String) {
+        listToReturn = List<String>.from(data.map((x) => x));
+      } else {
+        listToReturn = List.from(data.map((x) => x));
+      }
+    }
+    return listToReturn;
+  }
 }

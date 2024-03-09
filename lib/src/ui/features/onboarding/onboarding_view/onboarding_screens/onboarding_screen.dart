@@ -6,112 +6,159 @@ import 'package:flutter/material.dart';
 
 import '../../../../configs/local_storage_sqflite/local_storage_sqflite.dart';
 import '../../../../configs/local_storage_sqflite/sqflite_model.dart';
-import '../../../../configs/router/routes.dart';
 import '../../../../configs/screen_config.dart';
 import '../../../../generic/assets/image_assets.dart';
+import '../../../../generic/context/app_context.dart';
 import '../../../../generic/exports/constants_exports.dart';
 import '../../../../generic/exports/helper_functions_exports.dart';
 import '../../../../generic/exports/widget_exports.dart';
+import '../../onboarding_view_model/onboarding_service.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final GlobalKey<FormState> signInFormKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool rememberMe = false;
+  @override
+  void initState() {
+    super.initState();
+    fetchRememberedMeData();
+  }
+
+  void updateRememberMe(
+    bool value,
+  ) {
+    setState(() {
+      rememberMe = value;
+    });
+  }
+
+  Future<void> fetchRememberedMeData() async {
+    final Map<String, dynamic>? rememberedData =
+        await _RememberMeService.getRememberMeData();
+    if (rememberedData != null) {
+      updateRememberMe(
+        true,
+      );
+
+      emailController.text = rememberedData[_RememberMeService.userNameKey];
+      passwordController.text = rememberedData[_RememberMeService.passwordKey];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: appContext.scaffoldKey,
       backgroundColor: ThemeColors.kThemeColor,
-      body: SingleChildScrollView(
-        child: MainBorder(
-          children: [
-            HeightSpacer(
-              space: Spaces.defaultSpacingVertical * 4.5,
-            ),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: ScreenConfig.screenSizeWidth * 0.2,
+      body: Form(
+        key: signInFormKey,
+        child: SingleChildScrollView(
+          child: MainBorder(
+            children: [
+              HeightSpacer(
+                space: Spaces.defaultSpacingVertical * 4.5,
+              ),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ScreenConfig.screenSizeWidth * 0.2,
+                  ),
+                  child: Image.asset(
+                    ImageAssets.DHA_MART_LOGO,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-                child: Image.asset(
-                  ImageAssets.DHA_MART_LOGO,
-                  fit: BoxFit.contain,
+              ),
+              HeightSpacer(
+                space: Spaces.defaultSpacingVertical * 3,
+              ),
+              CustomText(
+                "We're highly delighted to collaborate you with DHA Mart",
+                style: FontSizes.size18Medium(
+                  color: Colors.white,
                 ),
+                textAlign: TextAlign.start,
               ),
-            ),
-            HeightSpacer(
-              space: Spaces.defaultSpacingVertical * 3,
-            ),
-            CustomText(
-              "We're highly delighted to collaborate you with DHA Mart",
-              style: FontSizes.size18Medium(
-                color: Colors.white,
+              HeightSpacer(
+                space: Spaces.fieldSpacingVertical,
               ),
-              textAlign: TextAlign.start,
-            ),
-            HeightSpacer(
-              space: Spaces.fieldSpacingVertical,
-            ),
-            CustomText(
-              'For the process kindly add your details below',
-              style: FontSizes.size16Medium(
-                color: Colors.white,
+              CustomText(
+                'For the process kindly add your details below',
+                style: FontSizes.size16Medium(
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.start,
               ),
-              textAlign: TextAlign.start,
-            ),
-            HeightSpacer(
-              space: Spaces.defaultSpacingVertical * 2,
-            ),
-            CustomText(
-              'Login to your account',
-              style: FontSizes.size20Medium(
-                color: Colors.white,
+              HeightSpacer(
+                space: Spaces.defaultSpacingVertical * 2,
               ),
-              textAlign: TextAlign.start,
-            ),
-            const HeightSpacer(),
-            EliteWholesalePrimaryTextField(
-              hintText: 'Email or Phone',
-              prefixIcon: Icons.email_outlined,
-              controller: TextEditingController(),
-              keyboadType: TextInputType.text,
-              validator: (val) => FieldValidator.emailFieldValidator(val!),
-              onChanged: (val) {
-                // signInFormKey.currentState!.validate();
-              },
-            ),
-            const HeightSpacer(),
-            EliteWholesalePrimaryTextField(
-              hintText: 'Password',
-              prefixIcon: Icons.password,
-              controller: TextEditingController(),
-              isPasswordField: true,
-              keyboadType: TextInputType.visiblePassword,
-              validator: (val) =>
-                  FieldValidator.passwordFieldSigninValidator(val!),
-              onChanged: (val) {
-                // signInFormKey.currentState!.validate();
-              },
-            ),
-            HeightSpacer(
-              space: Spaces.fieldSpacingVertical,
-            ),
-            const _RememberMeForgotPasswordDisplay(),
-            HeightSpacer(
-              space: Spaces.defaultSpacingVertical * 3,
-            ),
-            WideButton(
-              borderAlreadyGiven: true,
-              customColor: Colors.white,
-              customFontColor: ThemeColors.kThemeColor,
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  CustomRouter.homeScreenRouteName,
-                );
-              },
-              buttonText: 'Login',
-            ),
-            const HeightSpacer(),
-          ],
+              CustomText(
+                'Login to your account',
+                style: FontSizes.size20Medium(
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              const HeightSpacer(),
+              EliteWholesalePrimaryTextField(
+                hintText: 'Email or Phone',
+                prefixIcon: Icons.email_outlined,
+                controller: emailController,
+                keyboadType: TextInputType.text,
+                validator: (val) => FieldValidator.genericTextValidator(
+                    val!, 'Please enter your email or phone number'),
+                onChanged: (val) {
+                  signInFormKey.currentState!.validate();
+                },
+              ),
+              const HeightSpacer(),
+              EliteWholesalePrimaryTextField(
+                hintText: 'Password',
+                prefixIcon: Icons.password,
+                controller: passwordController,
+                isPasswordField: true,
+                keyboadType: TextInputType.visiblePassword,
+                validator: (val) =>
+                    FieldValidator.passwordFieldSigninValidator(val!),
+                onChanged: (val) {
+                  signInFormKey.currentState!.validate();
+                },
+              ),
+              HeightSpacer(
+                space: Spaces.fieldSpacingVertical,
+              ),
+              const _RememberMeForgotPasswordDisplay(),
+              HeightSpacer(
+                space: Spaces.defaultSpacingVertical * 3,
+              ),
+              WideButton(
+                borderAlreadyGiven: true,
+                customColor: Colors.white,
+                customFontColor: ThemeColors.kThemeColor,
+                onPressed: () {
+                  if (signInFormKey.currentState!.validate()) {
+                    OnboardingService.loginUser(
+                      context,
+                      userName: emailController.text,
+                      userPassword: passwordController.text,
+                    );
+                  }
+                },
+                buttonText: 'Login',
+              ),
+              HeightSpacer(
+                space: Spaces.defaultSpacingVertical * 2,
+              ),
+            ],
+          ),
         ),
       ),
     );

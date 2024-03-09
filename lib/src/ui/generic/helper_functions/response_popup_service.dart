@@ -43,7 +43,7 @@ class ResponsePopUpService {
       eliteWholeSaleDialogBoxWithWidgets(
         context: appContext.getContext()!,
         heading: heading ?? 'Verification failed',
-        iconPath: IconAssets.DIALOG_CROSS_ICON,
+        iconData: Icons.cancel_rounded,
         text: message,
         button1: buttonFunction ??
             () {

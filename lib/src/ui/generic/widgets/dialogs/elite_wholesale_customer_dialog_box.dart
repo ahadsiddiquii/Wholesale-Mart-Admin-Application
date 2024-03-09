@@ -3,15 +3,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../configs/screen_config.dart';
+import '../../constants/spaces.dart';
 import '../../exports/constants_exports.dart'
     show Decorations, FontSizes, ThemeColors;
 import '../../exports/widget_exports.dart' show CustomText, WideButton;
+import '../spacers/height_spacer.dart';
 
 Future<VoidCallback?> eliteWholeSaleDialogBoxWithWidgets({
   required BuildContext context,
   String? heading,
   String? text,
   String? iconPath,
+  IconData? iconData,
   bool isAnimatedAsset = false,
   List<Widget>? widgets,
   String? button1Text,
@@ -42,9 +45,19 @@ Future<VoidCallback?> eliteWholeSaleDialogBoxWithWidgets({
             Decorations.kDialogBoxRadius,
           ),
         ),
-        title: (iconPath != null || heading != null)
+        title: (iconPath != null || heading != null || iconData != null)
             ? Column(
                 children: [
+                  if (iconData != null) ...[
+                    Icon(
+                      iconData,
+                      color: ThemeColors.kThemeColor,
+                      size: 70,
+                    ),
+                    HeightSpacer(
+                      space: Spaces.smallestSpacingVertical,
+                    ),
+                  ],
                   if (iconPath != null)
                     Padding(
                       padding: const EdgeInsets.only(

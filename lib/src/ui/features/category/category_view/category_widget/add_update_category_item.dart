@@ -5,6 +5,7 @@ import '../../../../generic/constants/spaces.dart';
 import '../../../../generic/exports/helper_functions_exports.dart';
 import '../../../../generic/exports/widget_exports.dart';
 import '../../category_model/category.dart';
+import '../../category_view_model/category_service.dart';
 
 class AddUpdateCategoryItemDisplay extends StatefulWidget {
   const AddUpdateCategoryItemDisplay({
@@ -49,7 +50,11 @@ class _AddUpdateCategoryItemDisplayState
           ),
           WideButton(
             onPressed: () {
-              if (categoryFormKey.currentState!.validate()) {}
+              if (categoryFormKey.currentState!.validate()) {
+                CategoryService.addCategory(context,
+                    categoryName: 'categoryName',
+                    categoryImage: 'categoryImage');
+              }
             },
             borderAlreadyGiven: true,
             buttonText: 'Save',

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../generic/exports/assets_exports.dart';
 import '../category_model/all_categories_bloc/all_categories_bloc.dart';
 import '../category_model/category.dart';
+import '../category_model/category_cud_bloc/category_cud_bloc.dart';
 
 class CategoryService {
   CategoryService._();
@@ -54,6 +55,8 @@ class CategoryService {
     required int categoryId,
   }) {}
 
+  //Bloc Calling
+  //All Categories Bloc
   static void getAllCategories(BuildContext context) {
     final allCategoriesBlocState =
         BlocProvider.of<AllCategoriesBloc>(context).state;
@@ -74,6 +77,49 @@ class CategoryService {
   static void resetAllCategoriesBloc(BuildContext context) {
     BlocProvider.of<AllCategoriesBloc>(context).add(
       ResetAllCategoriesStateToInitial(),
+    );
+  }
+
+  //Category CUD Bloc
+  //Add Category
+  static void addCategory(
+    BuildContext context, {
+    required String categoryName,
+    required String categoryImage,
+  }) {
+    BlocProvider.of<CategoryCudBloc>(context).add(
+      AddCategory(
+        categoryName: categoryName,
+        categoryImage: categoryImage,
+      ),
+    );
+  }
+
+  //Update Category
+  static void updateCategory(
+    BuildContext context, {
+    required int categoryId,
+    String? categoryName,
+    String? categoryImage,
+  }) {
+    BlocProvider.of<CategoryCudBloc>(context).add(
+      UpdateCategory(
+        categoryId: categoryId,
+        categoryName: categoryName,
+        categoryImage: categoryImage,
+      ),
+    );
+  }
+
+  //Delete Category
+  static void deleteCategory(
+    BuildContext context, {
+    required int categoryId,
+  }) {
+    BlocProvider.of<CategoryCudBloc>(context).add(
+      DeleteCategory(
+        categoryId: categoryId,
+      ),
     );
   }
 }

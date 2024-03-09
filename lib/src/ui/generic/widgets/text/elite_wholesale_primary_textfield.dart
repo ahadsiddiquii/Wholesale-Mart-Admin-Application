@@ -149,7 +149,6 @@ class _EliteWholesalePrimaryTextFieldState
       child: DecoratedBox(
         decoration: BoxDecoration(
           boxShadow: widget.showFieldShadow ? Decorations.kItemBoxShadow : null,
-          color: Colors.white,
           borderRadius: BorderRadius.circular(
             Decorations.kWideButtonBorderRadius,
           ),
@@ -162,6 +161,8 @@ class _EliteWholesalePrimaryTextFieldState
             color: Colors.black,
           ),
           decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
             suffixIcon: _getSuffixIcon(),
             prefixIcon: widget.prefixIcon != null
                 ? Icon(

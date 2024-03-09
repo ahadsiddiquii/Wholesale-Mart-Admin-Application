@@ -9,6 +9,7 @@ class CategoryProvider {
   final String baseServerUrl = AppConfig.getApiUrl();
   final String tableName = 'category/';
 
+  //Get All Categories
   Future<List<Category>> getCategories() async {
     final String apiUrl = '$baseServerUrl$tableName';
     List<Category> categoriesList = [];
@@ -44,5 +45,114 @@ class CategoryProvider {
       },
     );
     return categoriesList;
+  }
+
+  //Add Category
+  Future<bool> addCategory(
+    String categoryName,
+    String categoryImage,
+  ) async {
+    final String apiUrl = '$baseServerUrl$tableName';
+    bool categoryAdded = false;
+    await BaseClient.safeApiCall(
+      apiUrl,
+      RequestType.post,
+      data: {
+        'categoryName': categoryName,
+        'categoryImage': categoryImage,
+      },
+      onError: (e) {},
+      onSuccess: (Response response) {
+        try {
+          if (response.data['success']) {
+            categoryAdded = true;
+          } else {
+            throw Exception();
+          }
+        } catch (e) {
+          final String errorString =
+              'CategoryProvider: addCategory, onSuccess caught: $e';
+          debugPrint(
+            errorString,
+          );
+          throw Exception(
+            errorString,
+          );
+        }
+      },
+    );
+    return categoryAdded;
+  }
+
+  //Delete Category
+  Future<bool> deleteCategory(int categoryId) async {
+    final String apiUrl = '$baseServerUrl$tableName$categoryId';
+    bool categoryDeleted = false;
+    await BaseClient.safeApiCall(
+      apiUrl,
+      RequestType.delete,
+      onError: (e) {},
+      onSuccess: (Response response) {
+        try {
+          if (response.data['success']) {
+            categoryDeleted = true;
+          } else {
+            throw Exception();
+          }
+        } catch (e) {
+          final String errorString =
+              'CategoryProvider: deleteCategory, onSuccess caught: $e';
+          debugPrint(
+            errorString,
+          );
+          throw Exception(
+            errorString,
+          );
+        }
+      },
+    );
+    return categoryDeleted;
+  }
+
+  //Update Category
+  Future<bool> updateCategory(
+    int categoryId,
+    String? categoryName,
+    String? categoryImage,
+  ) async {
+    final String apiUrl = '$baseServerUrl$tableName$categoryId';
+    bool updatedCategory = false;
+    final Map<String, dynamic> requestData = {};
+    if (categoryName != null) {
+      requestData['categoryName'] = categoryName;
+    }
+    if (categoryImage != null) {
+      requestData['categoryImage'] = categoryImage;
+    }
+    await BaseClient.safeApiCall(
+      apiUrl,
+      RequestType.put,
+      data: requestData,
+      onError: (e) {},
+      onSuccess: (Response response) {
+        try {
+          if (response.data['success']) {
+            updatedCategory = true;
+          } else {
+            throw Exception();
+          }
+        } catch (e) {
+          final String errorString =
+              'CategoryProvider: updatedCategory, onSuccess caught: $e';
+          debugPrint(
+            errorString,
+          );
+          throw Exception(
+            errorString,
+          );
+        }
+      },
+    );
+    return updatedCategory;
   }
 }
