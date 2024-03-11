@@ -65,7 +65,7 @@ class WideButton extends StatelessWidget {
                     ? ThemeColors.kButtonSecondaryColor
                     : isTransparent
                         ? Colors.transparent
-                        : customColor.withOpacity(0.9),
+                        : customColor.withOpacity(0.95),
                 borderRadius:
                     BorderRadius.circular(Decorations.kWideButtonBorderRadius),
                 border: isTransparent

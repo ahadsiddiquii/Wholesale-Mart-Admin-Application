@@ -135,7 +135,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               HeightSpacer(
                 space: Spaces.fieldSpacingVertical,
               ),
-              const _RememberMeForgotPasswordDisplay(),
+              _RememberMeForgotPasswordDisplay(
+                rememberMe: rememberMe,
+                rememberMeFunction: updateRememberMe,
+              ),
               HeightSpacer(
                 space: Spaces.defaultSpacingVertical * 3,
               ),
@@ -145,6 +148,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 customFontColor: ThemeColors.kThemeColor,
                 onPressed: () {
                   if (signInFormKey.currentState!.validate()) {
+                    if (rememberMe) {
+                      _RememberMeService.saveRememberMeCredentials(
+                        emailController.text,
+                        passwordController.text,
+                      );
+                    }
                     OnboardingService.loginUser(
                       context,
                       userName: emailController.text,
